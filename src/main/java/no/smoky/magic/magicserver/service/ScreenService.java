@@ -3,12 +3,14 @@ package no.smoky.magic.magicserver.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -25,8 +27,7 @@ public class ScreenService {
     private Environment env;
 
     private GoogleCredentials credentials;
-    private FirebaseOptions options;
-
+    private FirebaseOptions fbOptions;
     private Firestore db;
 
     public ScreenService() {
@@ -39,16 +40,37 @@ public class ScreenService {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        options = new FirebaseOptions.Builder().setCredentials(credentials).setProjectId(projectId).build();
+        fbOptions = new FirebaseOptions.Builder().setCredentials(credentials).setProjectId(projectId).build();
+
+        FirestoreOptions fsOptions = FirestoreOptions.newBuilder().setTimestampsInSnapshotsEnabled(true).setCredentials(credentials).setProjectId(projectId).build();
+
         try {
-            FirebaseApp.initializeApp(options);
+            FirebaseApp.initializeApp(fbOptions);
         } catch (IllegalStateException e) {
-            
         }
-        db = FirestoreClient.getFirestore();
+
+        db = fsOptions.getService();;
     }
 
     public void create(Screen newScreen) {
+        // const screen = {
+        //     name: "" + req.body.name,
+        //     users: req.body.users,
+        //     refreshTime: new Date(),
+        //     }
+        
+        //     const secret = req.body.secret;
+        //     const ref = db().collection('screens').doc(secret);
+        //     ref.set(screen).then(() => {
+        //     null
+        //     res.redirect(303, screen.toString());
+        //     }).catch((error) => {
+        //     console.log('Screen save failed: ', error);
+        //     })
+
+        
+
+
 
     }
 
@@ -59,9 +81,11 @@ public class ScreenService {
         List<Screen> screens = new ArrayList<>();
         try {
             QuerySnapshot screenList = screenListFuture.get();
-            screenList.forEach(screen -> {
-                System.out.println(screen.toString());
-                screens.add(screen.toObject(Screen.class));
+            screenList.forEach(doc -> {
+                String key = doc.getId();
+                String name = doc.get("name").toString();
+                Screen screen = new Screen(name, key);
+                screens.add(screen);
             });
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
