@@ -44,4 +44,15 @@ public class ScreenServiceTest {
         List<Screen> screens = screenService.read();
         Assert.assertTrue(screens.size() > 2);
     }
+
+    @Test
+    public void canCreateReadDeleteScreen() {
+        Screen toCreate = new Screen("created screen name", "bla");
+        Screen created = screenService.create(toCreate);
+        Assert.assertEquals("Created object equals input", created, toCreate);
+        Screen read = screenService.read(toCreate.getKey());
+        Assert.assertEquals("Read object equals created", read, created);
+        Assert.assertTrue("Delete object returns true", screenService.delete(read.getKey()));
+
+    }
 } 
