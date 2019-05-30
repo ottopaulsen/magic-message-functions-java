@@ -87,7 +87,20 @@ public class ScreenService {
     }
 
     public boolean delete(String key) {
-        return true;
+        DocumentReference ref = db.collection("screens").document(key);
+        ApiFuture<WriteResult> future = ref.delete();
+        WriteResult res;
+        try {
+            res = future.get();
+            return true;
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public Screen read(String key) {

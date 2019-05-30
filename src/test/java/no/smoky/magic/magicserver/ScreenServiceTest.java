@@ -47,12 +47,12 @@ public class ScreenServiceTest {
 
     @Test
     public void canCreateReadDeleteScreen() {
-        Screen toCreate = new Screen("created screen name", "bla");
+        Screen toCreate = new Screen("Test screen name", "Test screen key");
         Screen created = screenService.create(toCreate);
         Assert.assertEquals("Created object equals input", created, toCreate);
         Screen read = screenService.read(toCreate.getKey());
         Assert.assertEquals("Read object equals created", read, created);
-        Assert.assertTrue("Delete object returns true", screenService.delete(read.getKey()));
-
+        boolean deleted = screenService.delete(read.getKey());
+        Assert.assertTrue("Delete object returns true", deleted);
     }
 } 
