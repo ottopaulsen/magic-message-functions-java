@@ -17,15 +17,16 @@ import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.core.env.Environment;
 
 import no.smoky.magic.magicserver.model.Screen;
+import no.smoky.magic.magicserver.model.ScreenGET;
 
 public class ScreenService {
 
-    @Autowired
-    private Environment env;
+    // @Autowired
+    // private Environment env;
 
     private GoogleCredentials credentials;
     private FirebaseOptions fbOptions;
@@ -55,27 +56,14 @@ public class ScreenService {
         ;
     }
 
-    public Screen create(Screen newScreen) {
-        // const screen = {
-        // name: "" + req.body.name,
-        // users: req.body.users,
-        // refreshTime: new Date(),
-        // }
+    public ScreenGET create(Screen newScreen, String key) {
 
-        // const secret = req.body.secret;
-        // const ref = db().collection('screens').doc(secret);
-        // ref.set(screen).then(() => {
-        // null
-        // res.redirect(303, screen.toString());
-        // }).catch((error) => {
-        // console.log('Screen save failed: ', error);
-        // })
-
-        DocumentReference ref = db.collection("screens").document(newScreen.getKey());
+        DocumentReference ref = db.collection("screens").document(key);
         ApiFuture<WriteResult> future = ref.set(newScreen);
         WriteResult res;
         try {
             res = future.get();
+            System.out.println("create WriteResult res = " + res);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -83,7 +71,7 @@ public class ScreenService {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return read(newScreen.getKey());
+        return read(key);
     }
 
     public boolean delete(String key) {
@@ -92,6 +80,7 @@ public class ScreenService {
         WriteResult res;
         try {
             res = future.get();
+            System.out.println("delete WriteResult res = " + res);
             return true;
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
@@ -103,14 +92,14 @@ public class ScreenService {
         return false;
     }
 
-    public Screen read(String key) {
+    public ScreenGET read(String key) {
         DocumentReference ref = db.collection("screens").document(key);
         ApiFuture<DocumentSnapshot> future = ref.get();
         DocumentSnapshot doc;
-        Screen res = null;
+        ScreenGET res = null;
         try {
             doc = future.get();
-            res = new Screen(doc.get("name").toString(), doc.getId());
+            res = new ScreenGET(doc.get("name").toString(), doc.getId());
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -121,16 +110,16 @@ public class ScreenService {
         return res;
     }
 
-    public List<Screen> read() {
+    public List<ScreenGET> read() {
         CollectionReference screensRef = db.collection("screens");
         ApiFuture<QuerySnapshot> screenListFuture = screensRef.get();
-        List<Screen> screens = new ArrayList<>();
+        List<ScreenGET> screens = new ArrayList<>();
         try {
             QuerySnapshot screenList = screenListFuture.get();
             screenList.forEach(doc -> {
                 String key = doc.getId();
                 String name = doc.get("name").toString();
-                Screen screen = new Screen(name, key);
+                ScreenGET screen = new ScreenGET(name, key);
                 screens.add(screen);
             });
         } catch (InterruptedException e) {

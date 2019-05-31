@@ -1,27 +1,28 @@
 package no.smoky.magic.magicserver.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.cloud.Timestamp;
 
 import lombok.Data;
 
 @Data
 public class Screen {
-    private String key;
     private String name;
     private Timestamp refreshTime;
-    private String users;
+    private Map<String, String> users;
 
-    // Constructors
-
-    // public Screen(String name) {
-    //     this(name, "");
-    // }
-
-    public Screen(String name, String key) {
+    public Screen(String name) {
         this.setName(name);
-        this.setKey(key);
-        this.users = "";
         this.refreshTime = Timestamp.now();
+        this.users = new HashMap<String, String>();
+    }
+
+    public Screen(ScreenPOST rest) {
+        this.setName(rest.getName());
+        this.setUsers(rest.getUsers());
+        this.setRefreshTime(Timestamp.now());
     }
 
     // Standard overrides
@@ -36,57 +37,6 @@ public class Screen {
         }
         Screen s = (Screen) o;
         return name.equals(s.name) &&
-               key.equals(s.key) &&
                users.equals(s.users);
     }
-
-    @Override
-    public int hashCode() {
-        return key.hashCode();
-    }
-
-    public static String SEP = ", ";
-    @Override
-    public String toString() {
-        return key + SEP + name + SEP + refreshTime + SEP + users;
-    }
-
-    // Getters and setters
-
-    public String getUsers() {
-        return users;
-    }
-
-    public void setUsers(String users) {
-        this.users = users;
-    }
-
-    public Timestamp getRefreshTime() {
-        return refreshTime;
-    }
-
-    public void setRefreshTime(Timestamp refreshTime) {
-        this.refreshTime = refreshTime;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-
-
-
 }

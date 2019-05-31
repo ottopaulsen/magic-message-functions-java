@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import no.smoky.magic.magicserver.model.Screen;
+import no.smoky.magic.magicserver.model.ScreenGET;
 import no.smoky.magic.magicserver.service.ScreenService;
 
 @RunWith(SpringRunner.class)
@@ -29,28 +30,29 @@ public class ScreenServiceTest {
 
     @Test
     public void firstScreenHasName() {
-        List<Screen> screens = screenService.read();
+        List<ScreenGET> screens = screenService.read();
         Assert.assertNotNull(screens.get(0).getName());
     }
 
     @Test
     public void firstScreenHasKey() {
-        List<Screen> screens = screenService.read();
+        List<ScreenGET> screens = screenService.read();
         Assert.assertNotNull(screens.get(0).getKey());
     }
 
     @Test
     public void hasMultipleScreens() {
-        List<Screen> screens = screenService.read();
+        List<ScreenGET> screens = screenService.read();
         Assert.assertTrue(screens.size() > 2);
     }
 
     @Test
     public void canCreateReadDeleteScreen() {
-        Screen toCreate = new Screen("Test screen name", "Test screen key");
-        Screen created = screenService.create(toCreate);
+        String key = "Test screen key";
+        Screen toCreate = new Screen("Test screen name");
+        ScreenGET created = screenService.create(toCreate, key);
         Assert.assertEquals("Created object equals input", created, toCreate);
-        Screen read = screenService.read(toCreate.getKey());
+        ScreenGET read = screenService.read(key);
         Assert.assertEquals("Read object equals created", read, created);
         boolean deleted = screenService.delete(read.getKey());
         Assert.assertTrue("Delete object returns true", deleted);
