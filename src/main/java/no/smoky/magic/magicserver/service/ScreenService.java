@@ -17,6 +17,8 @@ import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 
+import no.smoky.magic.magicserver.model.Message;
+
 // import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.core.env.Environment;
 
@@ -131,5 +133,23 @@ public class ScreenService {
         }
 
         return screens;
+    }
+
+    public boolean create(Message message, String screenKey) {
+        CollectionReference ref = db.collection("screens/" + screenKey + "/messages");
+        ApiFuture<DocumentReference> future = ref.add(message);
+        DocumentReference res;
+        try {
+            res = future.get();
+            System.out.println("create message WriteResult res = " + res);
+            return true;
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
     }
 }

@@ -1,7 +1,8 @@
 package no.smoky.magic.magicserver.controller;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,7 @@ public class ScreenController {
     } 
 
     @GetMapping("/screens")
-    List<ScreenGET> send() {
+    List<ScreenGET> send(HttpServletRequest request) {
         List<ScreenGET> screens = this.screenService.read();
         System.out.println("Result from read: ");
         System.out.println(screens.toString());
@@ -41,4 +42,6 @@ public class ScreenController {
         System.out.println("POST screens: " + newScreen);
         return screenService.create(new Screen(newScreen), newScreen.getSecret());
     }
+
+    
 }
