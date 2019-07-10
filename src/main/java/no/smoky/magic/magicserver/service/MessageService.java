@@ -7,6 +7,7 @@ import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.firestore.WriteResult;
@@ -20,35 +21,16 @@ public class MessageService {
     // @Autowired
     // private Environment env;
 
-    private GoogleCredentials credentials;
-    private FirebaseOptions fbOptions;
-    private Firestore db;
+    // private GoogleCredentials credentials;
+    // private FirebaseOptions fbOptions;
+    private static Firestore db;
 
     public MessageService() {
-        // String projectId = env.getProperty("app.firebase.projectId");
-        String projectId = "magic-acf51";
-        try {
-            // Use the application default credentials
-            credentials = GoogleCredentials.getApplicationDefault();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        fbOptions = new FirebaseOptions.Builder().setCredentials(credentials).setProjectId(projectId).build();
+    }
 
-        FirestoreOptions fsOptions = FirestoreOptions.newBuilder()
-                                                     .setTimestampsInSnapshotsEnabled(true)
-                                                     .setCredentials(credentials)
-                                                     .setProjectId(projectId)
-                                                     .build();
 
-        try {
-            FirebaseApp.initializeApp(fbOptions);
-        } catch (IllegalStateException e) {
-        }
-
-        db = fsOptions.getService();
-        ;
+    public static void setFirestore(Firestore fs) {
+        db = fs;
     }
 
 
@@ -62,6 +44,7 @@ public class MessageService {
             return res.getId();
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
+            System.out.println("Hey, Got InterruptedException");
             e.printStackTrace();
         } catch (ExecutionException e) {
             // TODO Auto-generated catch block
@@ -87,5 +70,23 @@ public class MessageService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public Message read(String screenKey, String messageId) {
+        DocumentReference ref = db.collection("screens/" + screenKey + "/messages").document(messageId);
+        ApiFuture<DocumentSnapshot> future = ref.get();
+        DocumentSnapshot doc;
+        Message res = null;
+        try {
+            doc = future.get();
+            res = doc.toObject(Message.class);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return res;
     }
 }

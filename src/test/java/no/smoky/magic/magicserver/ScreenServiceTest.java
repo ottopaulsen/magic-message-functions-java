@@ -43,7 +43,7 @@ public class ScreenServiceTest {
     @Test
     public void hasMultipleScreens() {
         List<ScreenGET> screens = screenService.read();
-        Assert.assertTrue(screens.size() > 2);
+        Assert.assertTrue(screens.size() > 3);
     }
 
     @Test

@@ -12,6 +12,10 @@ public class Message {
     private Timestamp sentTime;
     private long validMinutes;
 
+    public Message() {
+        
+    }
+
     public Message(String message, String sentBy, String sentByEmail, Timestamp sentTime, long validMinutes) {
         this.message = message;
         this.sentBy = sentBy;

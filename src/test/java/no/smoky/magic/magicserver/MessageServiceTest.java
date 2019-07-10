@@ -29,15 +29,23 @@ public class MessageServiceTest {
     }
 
     @Test
-    public void canCreateReadDeleteScreen() {
+    public void canCreateReadDeleteMessage() {
         String screenKey = "Test screen key";
         Screen toCreate = new Screen("Test screen name");
         screenService.create(toCreate, screenKey);
 
-        Message message = new Message("Test message", "Otto", "ottpau@gmail.com", Timestamp.now(), 10);
+        Timestamp testTime = Timestamp.now();
+        Message message = new Message("Test message", "Otto", "ottpau@gmail.com", testTime, 10);
         String messageId = messageService.create(message, screenKey);
 
         Assert.assertNotNull("MessageId not null", messageId);
+
+        message = messageService.read(screenKey, messageId);
+        Assert.assertEquals("Test message", message.getMessage());
+        Assert.assertEquals("Otto", message.getSentBy());
+        Assert.assertEquals("ottpau@gmail.com", message.getSentByEmail());
+        Assert.assertEquals(testTime, message.getSentTime());
+        Assert.assertEquals(10, message.getValidMinutes());
                 
         boolean messageDeleted = messageService.delete(screenKey, messageId);
         Assert.assertTrue("Delete message returns true", messageDeleted);
