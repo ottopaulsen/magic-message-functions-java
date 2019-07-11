@@ -48,14 +48,14 @@ public class MessageController {
         logger.info("POST message to " + screenKey + ": " + messagePost);
 
         Screen screen = screenService.readFromDb(screenKey);
-        logger.info("Posting to screen: " + screen);
 
         Message message = new Message(messagePost.getMessage(),
                 screen.getUsers().get(principal.getName().replace('.', '+')), // sentBy
                 principal.getName(), // sentByEmail
                 Timestamp.now(), messagePost.getLifetime());
-        logger.info("Creating message: " + message);
-        String messageId = messageService.create(message, screenKey);
+                String messageId = messageService.create(message, screenKey);
+                message.setId(messageId);
+                logger.info("Created message: " + message);
 
         return messageService.read(screenKey, messageId);
     }
@@ -74,10 +74,7 @@ public class MessageController {
         String sentByEmail = message.getSentByEmail();
         String userEmail = principal.getName();
 
-        logger.info("User " + userEmail + " trying to delete message sent by " + sentByEmail);
-
         if(sentByEmail.equals(userEmail)) {
-            logger.info("Same email - delete allowed");
             if(messageService.delete(screenKey, messageId)) {
                 logger.info("\"Message\": \"Message deleted\"");
             } else {

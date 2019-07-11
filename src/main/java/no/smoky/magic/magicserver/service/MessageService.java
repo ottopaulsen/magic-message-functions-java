@@ -21,18 +21,14 @@ public class MessageService {
     // @Autowired
     // private Environment env;
 
-    // private GoogleCredentials credentials;
-    // private FirebaseOptions fbOptions;
     private static Firestore db;
 
     public MessageService() {
     }
 
-
     public static void setFirestore(Firestore fs) {
         db = fs;
     }
-
 
     public String create(Message message, String screenKey) {
         CollectionReference ref = db.collection("screens/" + screenKey + "/messages");
@@ -40,11 +36,10 @@ public class MessageService {
         DocumentReference res;
         try {
             res = future.get();
-            System.out.println("create message WriteResult res = " + res);
             return res.getId();
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
-            System.out.println("Hey, Got InterruptedException");
+            System.out.println("Got InterruptedException");
             e.printStackTrace();
         } catch (ExecutionException e) {
             // TODO Auto-generated catch block
@@ -60,7 +55,6 @@ public class MessageService {
         WriteResult res;
         try {
             res = future.get();
-            System.out.println("delete message WriteResult res = " + res);
             return true;
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block

@@ -20,8 +20,6 @@ public class ServiceConfig {
     static Firestore db;
     FirebaseOptions fbOptions;
 
-    // String projectId = env.getProperty("app.firebase.projectId");
-
     ServiceConfig() {
         String projectId = "magic-acf51";
         GoogleCredentials credentials;
@@ -35,7 +33,6 @@ public class ServiceConfig {
             FirestoreOptions fsOptions = FirestoreOptions.newBuilder().setTimestampsInSnapshotsEnabled(true)
             .setCredentials(credentials).setProjectId(projectId).build();
             try {
-                // if(FirebaseApp.getInstance() == null){
                 if(FirebaseApp.getApps().size() == 0){
                     FirebaseApp.initializeApp(fbOptions);
                 }

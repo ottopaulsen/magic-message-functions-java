@@ -36,14 +36,12 @@ public class JwtTokenFilter extends GenericFilterBean {
     private JwtTokenProvider jwtTokenProvider;
 
     public JwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
-        logger.info("JwtTokenFilter: Constructor");
         this.jwtTokenProvider = jwtTokenProvider;
     }
     
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
     throws IOException, ServletException {      
-        logger.info("JwtTokenFilter: doFilter");
 
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) req);
         HttpServletResponse httpResponse = (HttpServletResponse) res;
@@ -52,34 +50,14 @@ public class JwtTokenFilter extends GenericFilterBean {
         if (token != null) {
             boolean tokenValid = jwtTokenProvider.validateToken(token);
     
-            logger.info("JwtTokenFilter Token valid: " + tokenValid);
-    
             if (tokenValid) {
                 Authentication auth = token != null ? jwtTokenProvider.getAuthentication(token) : null;
-                logger.info("JwtTokenFilter Authentication: " + auth);
                 SecurityContextHolder.getContext().setAuthentication(auth);
                 filterChain.doFilter(req, res);
             } else {
                 logger.info("Token not valid");
                 httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-                // throw new InvalidJwtAuthenticationException("Otto: Token not valid throws ex");
-
-
-                // Map<String, Object> data = new HashMap<>();
-                // data.put(
-                //   "timestamp", 
-                //   Calendar.getInstance().getTime());
-                // data.put(
-                //   "exception", 
-                //   "Invalid authentication token");
-         
-                // res.getOutputStream()
-                //   .println(objectMapper.writeValueAsString(data));
-     
                 res.getOutputStream().println("{\"Error\": \"Invalid authentication token\"}");
-     
-
-
             }
         } else {
             logger.info("Token not found");

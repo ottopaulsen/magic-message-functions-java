@@ -35,9 +35,7 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) {
         String userName = getUsername(token);
         String userId = getUid(token);
-        logger.info("JwtTokenProvider.getAuthentication userName: " + userName + ", Uid: " + userId);
         User userDetails = new User(userName, userId);
-        logger.info("userDetails: " + userDetails);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
@@ -65,7 +63,7 @@ public class JwtTokenProvider {
 
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
-        logger.info("JwtTokenProvider.resolveToken found token: " + bearerToken);
+        // logger.info("JwtTokenProvider.resolveToken found token: " + bearerToken);
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7, bearerToken.length());
         }
@@ -73,16 +71,15 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String token) {
-        logger.info("Validating token");
         try {
-            FirebaseToken firebaseToken = fbAuth.verifyIdToken(token);
-            logger.info("Authenticated: " + firebaseToken.getEmail());
+            fbAuth.verifyIdToken(token);
+            // FirebaseToken firebaseToken = fbAuth.verifyIdToken(token);
+            // logger.info("Authenticated: " + firebaseToken.getEmail());
             return true;
         } catch (FirebaseAuthException e) {
             logger.info("Authentication error: " + e);   
 
             return false;
-            // throw new InvalidJwtAuthenticationException("Otto: Expired or invalid JWT token");
         }
     }
 }
