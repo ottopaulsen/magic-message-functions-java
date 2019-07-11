@@ -80,6 +80,7 @@ public class MessageService {
         try {
             doc = future.get();
             res = doc.toObject(Message.class);
+            res.setId(messageId);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

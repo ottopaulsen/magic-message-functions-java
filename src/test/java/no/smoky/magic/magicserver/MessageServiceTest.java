@@ -46,6 +46,7 @@ public class MessageServiceTest {
         Assert.assertEquals("ottpau@gmail.com", message.getSentByEmail());
         Assert.assertEquals(testTime, message.getSentTime());
         Assert.assertEquals(10, message.getValidMinutes());
+        Assert.assertEquals(message.getId(), messageId);
                 
         boolean messageDeleted = messageService.delete(screenKey, messageId);
         Assert.assertTrue("Delete message returns true", messageDeleted);

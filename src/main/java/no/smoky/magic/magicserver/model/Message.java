@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class Message {
+    private String id;
     private String message;
     private String sentBy;
     private String sentByEmail;

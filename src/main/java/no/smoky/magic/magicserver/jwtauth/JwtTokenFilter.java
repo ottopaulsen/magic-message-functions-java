@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.cloud.storage.HttpMethod;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,7 @@ public class JwtTokenFilter extends GenericFilterBean {
 
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) req);
         HttpServletResponse httpResponse = (HttpServletResponse) res;
+        HttpServletRequest httpRequest = (HttpServletRequest) req;
 
         if (token != null) {
             boolean tokenValid = jwtTokenProvider.validateToken(token);
@@ -81,11 +83,17 @@ public class JwtTokenFilter extends GenericFilterBean {
             }
         } else {
             logger.info("Token not found");
+            
+            if(httpRequest.getMethod().equals("OPTIONS")) {
+                logger.info("But method is OPTIONS");
+                httpResponse.setStatus(HttpStatus.OK.value());
+                filterChain.doFilter(req, res);
+            } else {
+                httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                res.getOutputStream().println("{\"Error\": \"Authentication token not found. Use Authorization header with Bearer token\"}");
+            }
 
-            httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-            res.getOutputStream().println("{\"Error\": \"Authentication token not found. Use Authorization header with Bearer token\"}");
-
-  }
+        }
 
     }
 }

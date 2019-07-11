@@ -16,8 +16,8 @@ import no.smoky.magic.magicserver.model.ScreenGET;
 import no.smoky.magic.magicserver.model.ScreenPOST;
 import no.smoky.magic.magicserver.service.ScreenService;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 public class ScreenController {
 
     private ScreenService screenService;
